@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "motion/react";
 import confetti from "canvas-confetti";
 import { Send, Users, MessageSquare, CheckCircle2, AlertCircle } from "lucide-react";
 import { GuestWish } from "../types";
+import { submitGuestbook, subscribeGuestbook } from "../../lib/guestbook";
 
 export default function RsvpSection() {
   const [wishes, setWishes] = useState<GuestWish[]>([]);
@@ -15,27 +16,48 @@ export default function RsvpSection() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const seedWishes: GuestWish[] = [];
+  const formatTimestamp = (date: Date | null) => {
+  if (!date) return "Baru saja";
 
-  // Load from local storage or set initial seeds
-  useEffect(() => {
-    const saved = localStorage.getItem("wedding_rsvp_wishes");
-    if (saved) {
-      try {
-        const parsed = JSON.parse(saved);
-        // Clean out any old preview seed messages (seed-1, seed-2, etc.)
-        const filtered = parsed.filter((w: GuestWish) => !w.id?.startsWith("seed-"));
-        setWishes(filtered);
-        localStorage.setItem("wedding_rsvp_wishes", JSON.stringify(filtered));
-      } catch (e) {
-        setWishes([]);
-      }
-    } else {
-      setWishes([]);
-      localStorage.setItem("wedding_rsvp_wishes", JSON.stringify([]));
+  const formattedDate = date.toLocaleDateString("id-ID", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  });
+
+  const formattedTime = date
+    .toLocaleTimeString("id-ID", {
+      hour: "2-digit",
+      minute: "2-digit",
+    })
+    .replace(".", ":");
+
+  return `${formattedDate}, ${formattedTime}`;
+};
+
+useEffect(() => {
+  const unsubscribe = subscribeGuestbook(
+    (items) => {
+      const firebaseWishes: GuestWish[] = items.map((item) => ({
+        id: item.id,
+        name: item.name,
+        attendance: item.attendance,
+        guestCount: item.guestCount,
+        message: item.message,
+        timestamp: formatTimestamp(item.createdAt),
+      }));
+
+      setWishes(firebaseWishes);
+    },
+    (error) => {
+      console.error("Gagal memuat buku tamu:", error);
     }
-  }, []);
+  );
+
+  return () => unsubscribe();
+}, []);
 
   const triggerToast = (msg: string) => {
     setToastMessage(msg);
@@ -81,48 +103,36 @@ export default function RsvpSection() {
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    const newErrors: Record<string, string> = {};
+  const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
 
-    if (!formData.name.trim()) {
-      newErrors.name = "Mohon isi nama lengkap Anda.";
-    }
-    if (!formData.message.trim()) {
-      newErrors.message = "Mohon berikan doa restu atau ucapan.";
-    }
+  if (isSubmitting) return;
 
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors);
-      return;
-    }
+  const newErrors: Record<string, string> = {};
 
-    // Capture date
-    const now = new Date();
-    const formattedDate = now.toLocaleDateString("id-ID", {
-      day: "numeric",
-      month: "short",
-      year: "numeric",
-    });
-    const formattedTime = now.toLocaleTimeString("id-ID", {
-      hour: "2-digit",
-      minute: "2-digit",
-    });
+  if (!formData.name.trim()) {
+    newErrors.name = "Mohon isi nama lengkap Anda.";
+  }
 
-    const newWish: GuestWish = {
-      id: `rsvp-${Date.now()}`,
+  if (!formData.message.trim()) {
+    newErrors.message = "Mohon berikan doa restu atau ucapan.";
+  }
+
+  if (Object.keys(newErrors).length > 0) {
+    setErrors(newErrors);
+    return;
+  }
+
+  setIsSubmitting(true);
+
+  try {
+    await submitGuestbook({
       name: formData.name.trim(),
       attendance: formData.attendance as "hadir" | "tidak_hadir" | "ragu",
       guestCount: formData.attendance === "tidak_hadir" ? 0 : formData.guestCount,
       message: formData.message.trim(),
-      timestamp: `${formattedDate}, ${formattedTime.replace(".", ":")}`,
-    };
+    });
 
-    const updatedWishes = [newWish, ...wishes];
-    setWishes(updatedWishes);
-    localStorage.setItem("wedding_rsvp_wishes", JSON.stringify(updatedWishes));
-
-    // Confetti Fireworks!
     if (formData.attendance === "hadir") {
       confetti({
         particleCount: 150,
@@ -143,16 +153,21 @@ export default function RsvpSection() {
       triggerToast("Terima kasih atas doa restunya yang tulus!");
     }
 
-    // Reset Form
     setFormData({
       name: "",
       attendance: "hadir",
       guestCount: 1,
       message: "",
     });
-    setErrors({});
-  };
 
+    setErrors({});
+  } catch (error) {
+    console.error("Gagal mengirim ucapan:", error);
+    triggerToast("Ucapan gagal dikirim. Coba lagi sebentar.");
+  } finally {
+    setIsSubmitting(false);
+  }
+};
   // Safe helper to obtain monogram letter
   const getInitial = (name: string) => {
     return name ? name.trim().charAt(0).toUpperCase() : "G";
@@ -316,16 +331,16 @@ export default function RsvpSection() {
                 </div>
 
                 {/* Submit button */}
-                <motion.button
-                  id="btn-submit-rsvp"
-                  whileHover={{ scale: 1.01 }}
-                  whileTap={{ scale: 0.99 }}
-                  type="submit"
-                  className="w-full flex items-center justify-center gap-2 bg-artistic-text hover:bg-artistic-gold text-white py-4 rounded-sm text-xs font-sans tracking-[0.25em] uppercase font-bold cursor-pointer transition-all shadow-xs"
-                >
-                  <Send className="w-3.5 h-3.5 text-white" />
-                  UCAPAN &amp; KEHADIRAN
-                </motion.button>
+             <motion.button
+                id="btn-submit-rsvp"
+                whileHover={{ scale: 1.01 }}
+                whileTap={{ scale: 0.99 }}
+                type="submit"
+                disabled={isSubmitting}
+                className="w-full flex items-center justify-center gap-2 bg-artistic-text hover:bg-artistic-gold text-white py-4 rounded-sm text-xs font-sans tracking-[0.25em] uppercase font-bold cursor-pointer transition-all shadow-xs disabled:opacity-60 disabled:cursor-not-allowed">
+                <Send className="w-3.5 h-3.5 text-white" />
+                {isSubmitting ? "MENGIRIM..." : "UCAPAN & KEHADIRAN"}
+              </motion.button>
 
               </form>
             </div>
