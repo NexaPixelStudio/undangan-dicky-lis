@@ -44,7 +44,7 @@ export default function Envelope({ onOpen, guestName }: EnvelopeProps) {
         </motion.div>
 
         <span className="text-[10px] uppercase tracking-[0.35em] text-artistic-gold font-sans font-bold mb-4">
-          The Union of Two Souls
+          The Wedding of
         </span>
 
         <h1 className="font-serif text-5xl md:text-6xl text-artistic-text select-none my-4 font-light">
