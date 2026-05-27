@@ -1,130 +1,85 @@
-import { useEffect, useRef, useState, useImperativeHandle, forwardRef } from "react";
-import { Music, Volume2, VolumeX } from "lucide-react";
-import { motion, AnimatePresence } from "motion/react";
+import React, {
+  forwardRef,
+  useImperativeHandle,
+  useRef,
+  useState,
+} from "react";
+import { Volume2, VolumeX } from "lucide-react";
 
-interface AudioPlayerProps {
-  isPlayingInitially?: boolean;
-}
-
-export interface AudioPlayerRef {
+export type AudioPlayerRef = {
   play: () => void;
   pause: () => void;
-}
+};
 
-const AudioPlayer = forwardRef<AudioPlayerRef, AudioPlayerProps>(
-  ({ isPlayingInitially = false }, ref) => {
-    const audioUrl = "https://assets.mixkit.co/music/preview/mixkit-beautiful-dream-493.mp3";
-    const audioRef = useRef<HTMLAudioElement | null>(null);
-    const [isPlaying, setIsPlaying] = useState(isPlayingInitially);
-    const [muted, setMuted] = useState(false);
+const AudioPlayer = forwardRef<AudioPlayerRef>((_, ref) => {
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [hasStarted, setHasStarted] = useState(false);
 
-    // Initialize HTMLAudioElement safely on mount
-    useEffect(() => {
-      const audio = new Audio(audioUrl);
-      audio.loop = true;
-      audio.volume = 0.5;
-      audioRef.current = audio;
+  const musicSrc = `${import.meta.env.BASE_URL}audio/wedding-song.mp3`;
 
-      if (isPlayingInitially) {
-        audio.play().catch((err) => {
-          console.warn("Autoplay blocked by browser. Music will play on open click.", err);
-          setIsPlaying(false);
-        });
-      }
+  const play = async () => {
+    if (!audioRef.current) return;
 
-      return () => {
-        if (audioRef.current) {
-          audioRef.current.pause();
-          audioRef.current = null;
-        }
-      };
-    }, []);
+    try {
+      audioRef.current.volume = 0.45;
+      audioRef.current.loop = true;
+      setHasStarted(true);
 
-    useImperativeHandle(ref, () => ({
-      play: () => {
-        if (audioRef.current) {
-          audioRef.current.play()
-            .then(() => setIsPlaying(true))
-            .catch((err) => console.log("Audio play failed on gesture initiation:", err));
-        }
-      },
-      pause: () => {
-        if (audioRef.current) {
-          audioRef.current.pause();
-          setIsPlaying(false);
-        }
-      }
-    }));
+      await audioRef.current.play();
+      setIsPlaying(true);
+    } catch (error) {
+      console.error("Musik gagal diputar:", error);
+    }
+  };
 
-    const togglePlay = () => {
-      if (!audioRef.current) return;
-      if (isPlaying) {
-        audioRef.current.pause();
-        setIsPlaying(false);
-      } else {
-        audioRef.current.play()
-          .then(() => setIsPlaying(true))
-          .catch((err) => console.warn("Fallback trigger failed:", err));
-      }
-    };
+  const pause = () => {
+    if (!audioRef.current) return;
 
-    const toggleMute = () => {
-      if (!audioRef.current) return;
-      const newMute = !muted;
-      audioRef.current.muted = newMute;
-      setMuted(newMute);
-    };
+    audioRef.current.pause();
+    setIsPlaying(false);
+  };
 
-    return (
-      <div id="romantic-audio-dock" className="fixed bottom-6 right-6 z-40 flex items-center gap-2">
-        <AnimatePresence>
-          {isPlaying && (
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 20 }}
-              className="bg-white/90 backdrop-blur-md border border-artistic-border px-4 py-2 rounded-sm shadow-xl text-artistic-text text-[9px] tracking-[0.2em] font-sans uppercase flex items-center gap-2.5"
-            >
-              <div className="flex gap-0.5 items-end justify-center h-2.5 w-3.5">
-                <motion.span animate={{ height: [2, 10, 2] }} transition={{ repeat: Infinity, duration: 1.2, ease: "linear" }} className="w-0.5 bg-artistic-gold block rounded-full" />
-                <motion.span animate={{ height: [2, 12, 2] }} transition={{ repeat: Infinity, duration: 0.9, delay: 0.2, ease: "linear" }} className="w-0.5 bg-artistic-gold block rounded-full" />
-                <motion.span animate={{ height: [2, 8, 2] }} transition={{ repeat: Infinity, duration: 1.5, delay: 0.4, ease: "linear" }} className="w-0.5 bg-artistic-gold block rounded-full" />
-              </div>
-              <div className="flex flex-col text-left">
-                <span className="text-[7.5px] uppercase font-bold text-artistic-gold">Now Playing</span>
-                <span className="font-sans font-medium text-[9px]">Romansa Melodi — Beautiful Dream</span>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+  const toggleAudio = () => {
+    if (isPlaying) {
+      pause();
+    } else {
+      play();
+    }
+  };
 
-        <motion.button
-          id="btn-toggle-audio"
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          onClick={togglePlay}
-          className={`w-12 h-12 rounded-full flex items-center justify-center cursor-pointer shadow-xl border transition-all duration-300 ${
-            isPlaying
-              ? "bg-artistic-gold border-artistic-gold text-white"
-              : "bg-white border-artistic-border text-artistic-text"
-          }`}
+  useImperativeHandle(ref, () => ({
+    play,
+    pause,
+  }));
+
+  return (
+    <>
+      <audio
+        ref={audioRef}
+        src={musicSrc}
+        loop
+        preload="auto"
+      />
+
+      {hasStarted && (
+        <button
+          type="button"
+          onClick={toggleAudio}
+          className="fixed bottom-6 right-6 z-50 w-12 h-12 rounded-full bg-white/80 backdrop-blur-md border border-artistic-border shadow-lg flex items-center justify-center text-artistic-gold hover:bg-artistic-cream-soft transition-all"
+          aria-label={isPlaying ? "Matikan musik" : "Putar musik"}
         >
           {isPlaying ? (
-            <motion.div
-              animate={{ rotate: 360 }}
-              transition={{ repeat: Infinity, duration: 8, ease: "linear" }}
-              className="flex items-center justify-center"
-            >
-              <Music className="w-4 h-4" />
-            </motion.div>
+            <Volume2 className="w-5 h-5" />
           ) : (
-            <VolumeX className="w-4 h-4 opacity-60" />
+            <VolumeX className="w-5 h-5" />
           )}
-        </motion.button>
-      </div>
-    );
-  }
-);
+        </button>
+      )}
+    </>
+  );
+});
 
 AudioPlayer.displayName = "AudioPlayer";
+
 export default AudioPlayer;
