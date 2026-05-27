@@ -1,0 +1,6 @@
+{
+  "name": "Undangan Pernikahan Aesthetic",
+  "description": "Aplikasi undangan pernikahan digital yang unik, aesthetic, dilengkapi fitur RSVP, galeri foto interaktif, dan musik latar belakang yang romantis.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
