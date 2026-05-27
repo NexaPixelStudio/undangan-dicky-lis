@@ -144,7 +144,7 @@ export default function Gift() {
               Kirim Kado Fisik
             </h4>
             <p className="text-stone-600 text-sm leading-relaxed mb-4 font-light">
-              Jika Anda ingin mengirimkan kado berupa barang, Anda dapat mengirimkannya ke alamat rumah mempelai wanita di bawah ini:
+              Jika Anda ingin mengirimkan kado berupa barang, Anda dapat mengirimkannya ke alamat rumah mempelai pria di bawah ini:
             </p>
             
             <div className="p-4 bg-white rounded-sm border border-artistic-border text-xs text-stone-700 leading-relaxed font-sans mb-4">
