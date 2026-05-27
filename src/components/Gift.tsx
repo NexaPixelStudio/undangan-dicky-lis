@@ -14,7 +14,7 @@ export default function Gift() {
     {
       bankName: "Bank Central Asia (BCA)",
       accountNumber: "2832281086",
-      holderName: "Lis Fitriaa",
+      holderName: "Lis Fitria",
     },
   ];
 
