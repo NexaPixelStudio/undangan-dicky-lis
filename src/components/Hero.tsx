@@ -61,7 +61,7 @@ export default function Hero({ proposalDate }: HeroProps) {
       >
         <span className="w-1.5 h-1.5 rounded-full bg-artistic-gold animate-pulse"></span>
         <span className="text-[9px] tracking-[0.4em] font-sans uppercase font-bold text-artistic-gold">
-          The Union of Two Souls
+          The Wedding of
         </span>
       </motion.div>
 
