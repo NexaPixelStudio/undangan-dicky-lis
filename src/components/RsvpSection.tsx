@@ -225,7 +225,7 @@ useEffect(() => {
                     name="name"
                     value={formData.name}
                     onChange={handleInputChange}
-                    placeholder="Contoh: Sarah Az-Zahra"
+                    placeholder="Contoh: Andika & Keluarga"
                     className={`w-full bg-white/70 border ${
                       errors.name ? "border-rose-300" : "border-artistic-border"
                     } focus:border-artistic-gold rounded-sm px-5 py-3.5 text-stone-800 text-sm focus:outline-none transition-all placeholder:text-stone-300 font-sans`}
