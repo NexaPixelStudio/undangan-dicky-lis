@@ -6,12 +6,14 @@ import {
   orderBy,
   query,
   serverTimestamp,
-} from 'firebase/firestore';
-import { db } from './firebase';
+} from "firebase/firestore";
+import { db } from "./firebase";
+
+export type GuestbookAttendance = "hadir" | "tidak_hadir" | "ragu";
 
 export type GuestbookFormData = {
   name: string;
-  attendance: string;
+  attendance: GuestbookAttendance;
   guestCount: number;
   message: string;
 };
@@ -19,25 +21,32 @@ export type GuestbookFormData = {
 export type GuestbookItem = {
   id: string;
   name: string;
-  attendance: string;
+  attendance: GuestbookAttendance;
   guestCount: number;
   message: string;
   createdAt: Date | null;
 };
 
-const COLLECTION_NAME = 'wedding_guestbook';
+const COLLECTION_NAME = "wedding_guestbook";
 
 export async function submitGuestbook(data: GuestbookFormData) {
   const payload = {
     name: data.name.trim().slice(0, 80),
     attendance: data.attendance,
-    guestCount: Math.max(1, Math.min(10, Number(data.guestCount) || 1)),
+    guestCount:
+      data.attendance === "tidak_hadir"
+        ? 0
+        : Math.max(1, Math.min(5, Number(data.guestCount) || 1)),
     message: data.message.trim().slice(0, 500),
     createdAt: serverTimestamp(),
   };
 
   if (!payload.name) {
-    throw new Error('Nama tamu wajib diisi.');
+    throw new Error("Nama tamu wajib diisi.");
+  }
+
+  if (!payload.message) {
+    throw new Error("Ucapan wajib diisi.");
   }
 
   return addDoc(collection(db, COLLECTION_NAME), payload);
@@ -49,7 +58,7 @@ export function subscribeGuestbook(
 ) {
   const guestbookQuery = query(
     collection(db, COLLECTION_NAME),
-    orderBy('createdAt', 'desc'),
+    orderBy("createdAt", "desc"),
     limit(100)
   );
 
@@ -61,10 +70,10 @@ export function subscribeGuestbook(
 
         return {
           id: doc.id,
-          name: data.name || '',
-          attendance: data.attendance || '',
-          guestCount: data.guestCount || 1,
-          message: data.message || '',
+          name: data.name || "",
+          attendance: data.attendance || "hadir",
+          guestCount: data.guestCount || 0,
+          message: data.message || "",
           createdAt: data.createdAt?.toDate?.() || null,
         };
       });
