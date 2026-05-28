@@ -10,9 +10,9 @@ export default function Acara() {
       title: "Akad Nikah",
       date: "Jumat, 19 Juni 2026",
       time: "10:00 - 11:00 WIB",
-      venue: "Kediaman Mempelai Pria",
-      address: "Jalan Udayana, Gang Seroja, RT 05/RW 03, Nomor 16, Kelurahan Kebon Pala, Kecamatan Makasar, Jakarta Timur",
-      mapUrl: "https://maps.google.com/?q=Jalan+Udayana,+Gang+Seroja,+RT+05/RW+03,+Nomor+16,+Kebon+Pala,+Makasar,+Jakarta+Timur",
+      venue: "KUA Kecamatan Makasar",
+      address: "Jl. Kerja Bakti No. 15C, RT 08/RW 02, Kelurahan Makasar, Kecamatan Makasar, Jakarta Timur, DKI Jakarta 13570.",
+      mapUrl: "https://share.google/BnfTABUEYezJoOQBp",
       calendarUrl: "https://calendar.google.com/calendar/render?action=TEMPLATE&text=Akad+Nikah+Dicky+%26+Lis&dates=20260619T030000Z/20260619T040000Z&details=Acara+pernikahan+Dicky+dan+Lis.+Kami+mengharapkan+kehadiran+anda.&location=Jalan+Udayana,+Gang+Seroja,+RT+05/RW+03,+Nomor+16,+Kelurahan+Kebon+Pala,+Kecamatan+Makasar,+Jakarta+Timur&sf=true&output=xml",
     },
     {
@@ -21,7 +21,7 @@ export default function Acara() {
       time: "13:00 - Selesai WIB",
       venue: "Kediaman Mempelai Pria",
       address: "Jalan Udayana, Gang Seroja, RT 05/RW 03, Nomor 16, Kelurahan Kebon Pala, Kecamatan Makasar, Jakarta Timur",
-      mapUrl: "https://maps.google.com/?q=Jalan+Udayana,+Gang+Seroja,+RT+05/RW+03,+Nomor+16,+Kebon+Pala,+Makasar,+Jakarta+Timur",
+      mapUrl: "https://maps.app.goo.gl/7Xp8ACW18k6m5sM36",
       calendarUrl: "https://calendar.google.com/calendar/render?action=TEMPLATE&text=Resepsi+Pernikahan+Dicky+%26+Lis&dates=20260619T060000Z/20260619T100000Z&details=Resepsi+pernikahan+Dicky+dan+Lis.+Kami+mengharapkan+kehadiran+anda.&location=Jalan+Udayana,+Gang+Seroja,+RT+05/RW+03,+Nomor+16,+Kelurahan+Kebon+Pala,+Kecamatan+Makasar,+Jakarta+Timur&sf=true&output=xml",
     },
   ];
