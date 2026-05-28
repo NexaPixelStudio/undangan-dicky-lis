@@ -70,7 +70,7 @@ export default function Mempelai() {
  
             <motion.a
               whileHover={{ y: -2 }}
-              href="https://instagram.com/dicky.ksmh"
+              href="https://www.instagram.com/dicky.ksmh/"
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-2 text-artistic-text hover:text-artistic-gold border border-artistic-border hover:border-artistic-gold px-6 py-2.5 rounded-sm text-[10px] tracking-[0.2em] uppercase font-sans font-bold transition-all"
@@ -108,13 +108,13 @@ export default function Mempelai() {
  
             <motion.a
               whileHover={{ y: -2 }}
-              href="https://instagram.com/lisftra."
+              href="https://www.instagram.com/lisfitria_/"
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-2 text-artistic-text hover:text-artistic-gold border border-artistic-border hover:border-artistic-gold px-6 py-2.5 rounded-sm text-[10px] tracking-[0.2em] uppercase font-sans font-bold transition-all"
             >
               <Instagram className="w-3.5 h-3.5 text-artistic-gold" />
-              @lisftra.
+              @lisfitria_
             </motion.a>
           </motion.div>
 
