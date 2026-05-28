@@ -86,7 +86,7 @@ export default function Envelope({ onOpen, guestName }: EnvelopeProps) {
 
       {/* Aesthetic Footer Credit */}
       <span className="absolute bottom-6 font-sans text-[10px] text-artistic-gold tracking-[0.4em] uppercase font-bold">
-        10 OKTOBER 2026 • BANDUNG
+        19 JUNI 2026 • JAKARTA TIMUR
       </span>
     </motion.div>
   );
