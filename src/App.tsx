@@ -74,7 +74,7 @@ export default function App() {
                 &copy; 2026 All Rights Reserved.
               </p>
               <p className="text-[#877F76] text-[9px] mt-2 tracking-[0.15em] font-bold">
-                Designed in Artistic Flair Essence
+                Designed by NexaPixelDigital
               </p>
             </footer>
           </motion.div>
