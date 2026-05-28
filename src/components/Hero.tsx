@@ -3,7 +3,7 @@ import { motion } from "motion/react";
 import { Calendar, Heart, MapPin } from "lucide-react";
 
 interface HeroProps {
-  proposalDate: string; // Target wedding date, e.g. '2026-10-10T09:00:00'
+  proposalDate: string; // Target wedding date, e.g. '2026-06-19T09:00:00'
 }
 
 export default function Hero({ proposalDate }: HeroProps) {
@@ -85,7 +85,7 @@ export default function Hero({ proposalDate }: HeroProps) {
         <p className="font-serif text-lg md:text-xl text-stone-600 tracking-wide mb-12">
           Kami memohon doa restu Bapak/Ibu/Saudara/i di hari bahagia kami, yang diselenggarakan pada:
           <span className="block font-sans font-bold mt-4 text-artistic-text border-y border-artistic-border py-2.5 w-fit mx-auto px-8 tracking-[0.3em] text-xs uppercase bg-white/20">
-            Sabtu, 10 Oktober 2026
+            Jumat, 19 Juni 2026
           </span>
         </p>
 
